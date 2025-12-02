@@ -1,12 +1,9 @@
-# офіційний образ з Java 21
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk-jammy
 
-# копіюємо JAR з Gradle-білду
-COPY build/libs/java-spring-boot-ai-0.0.1-SNAPSHOT.jar app.jar
+WORKDIR /app
+COPY build/libs/*.jar app.jar
 
-# вказуємо, що додаток слухатиме порт, який дасть Render
-ENV PORT 8080
+ENV PORT=8080
 EXPOSE $PORT
 
-# запускаємо JAR з правильним портом
-ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "/app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar /app/app.jar"]
