@@ -1,22 +1,24 @@
-# Етап 1 — збірка
+# Етап 1 — збірка на Java 21
 FROM eclipse-temurin:21-jdk-jammy AS builder
 WORKDIR /app
 
-# Копіюємо все потрібне для Gradle
+# Копіюємо Gradle-файли
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle settings.gradle ./
+
+# Копіюємо код
 COPY src src
 
-# Даємо права і збираємо звичайний JAR (не bootJar!)
+# Примусово вимикаємо toolchain і збираємо на Java 21
 RUN chmod +x gradlew
-RUN ./gradlew build -x test
+RUN ./gradlew build -x test --no-daemon -PuseToolchain=false
 
-# Етап 2 — фінальний образ
+# Етап 2 — фінальний образ (легкий, тільки JRE 21)
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Копіюємо готовий JAR (звичайний, не bootJar)
+# Копіюємо готовий JAR
 COPY --from=builder /app/build/libs/java-spring-boot-ai-0.0.1-SNAPSHOT.jar app.jar
 
 # Порт від Render
