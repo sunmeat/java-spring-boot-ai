@@ -22,15 +22,6 @@ public class AiApplication {
     }
 }
 
-@Component
-class BrowserLauncher {
-    @EventListener(ApplicationReadyEvent.class)
-    public void launchBrowser() {
-        System.setProperty("java.awt.headless", "false");
-        try { Desktop.getDesktop().browse(new URI("http://localhost:8080")); } catch (Exception ignored) {}
-    }
-}
-
 @Service
 class OpenAiService {
 	// ключ взято на https://openrouter.ai/settings/keys
